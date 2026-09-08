@@ -97,6 +97,7 @@ class WeatherServiceTest {
                 .thenReturn(new Coordinates(17.3850, 78.4867));
         when(locationRepository.save(any(Location.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
+        
         when(weatherClient.getWeather(17.3850, 78.4867, date))
                 .thenReturn(details());
         when(weatherDataRepository.save(any(WeatherData.class)))

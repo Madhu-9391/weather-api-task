@@ -14,8 +14,8 @@ public class WeatherData {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-@ManyToOne(fetch = FetchType.EAGER, optional = false)    
-@JoinColumn(name = "location_id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
     @Column(name = "forecast_date", nullable = false)

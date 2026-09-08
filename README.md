@@ -4,7 +4,7 @@ Spring Boot backend solution for the Weather Info for Pincode assignment.
 
 ## What it does
 
-The API accepts a pincode and a date, resolves the pincode to latitude/longitude, fetches weather for that date, stores the data in MySQL, and reuses stored data on later requests.
+The API accepts a pincode and a date, resolves the pincode to latitude/longitude, fetches historical weather for that date, stores the data in MySQL, and reuses stored data on later requests.
 
 The implementation follows the assignment requirements:
 - one REST API
@@ -49,7 +49,7 @@ Example response:
 }
 ```
 
-`cached=true` means the weather record was returned from the database without calling the weather provider.
+`cached=true` means the weather record was returned from the database without calling the external weather provider.
 
 ## API-call optimization
 
@@ -70,7 +70,7 @@ The request flow is:
 ```text
 First request for a pincode/date
 pincode -> geocoding API -> save coordinates
-latitude/longitude -> weather API -> save weather
+latitude/longitude + date -> historical weather API -> calculate daily values -> save weather
 ```
 
 ```text
@@ -81,16 +81,28 @@ weather_data -> return saved result
 ```text
 Same pincode/different date
 locations -> reuse saved coordinates
-latitude/longitude -> weather API -> save new date
+latitude/longitude + new date -> historical weather API -> save new date
 ```
 
 Unique database constraints prevent duplicate pincode records and duplicate weather records for the same location/date.
 
-## OpenWeather reference and assumption
+## OpenWeather implementation
 
-The assignment references OpenWeather's Current Weather API. That reference shows the latitude/longitude weather request and the weather response structure.
+The assignment requires weather information for a particular date. The current-weather endpoint does not provide arbitrary historical dates, so this implementation uses OpenWeather's Historical Weather API.
 
-The assignment also requires a `for_date` value, including the sample date `2020-10-15`. The supplied OpenWeather reference documents the Current Weather API, which returns current conditions rather than arbitrary historical dates. As a reasonable implementation assumption, this project uses that referenced endpoint and stores the requested `for_date` alongside the returned weather snapshot. For a live demonstration, use the current date. The database cache still prevents repeated provider calls for the same pincode/date.
+Historical requests use:
+
+```text
+https://history.openweathermap.org/data/2.5/history/city
+```
+
+The request uses `lat`, `lon`, `type=hour`, `start`, `end`, `units=metric`, and the API key. The requested date is converted to a UTC start/end timestamp.
+
+The hourly response is processed as follows:
+- minimum temperature = minimum hourly temperature for the requested date
+- maximum temperature = maximum hourly temperature for the requested date
+- afternoon values = observation closest to 12:00 UTC
+- precipitation = sum of available hourly rain values
 
 Geocoding uses OpenWeather's postal-code endpoint:
 
@@ -131,7 +143,7 @@ Requirements:
 - Java 21
 - Maven
 - MySQL 8+
-- OpenWeather API key with access to the Current Weather endpoint
+- OpenWeather API key with access to the Historical Weather API
 
 Run tests:
 
