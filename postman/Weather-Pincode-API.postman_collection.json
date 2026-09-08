@@ -1,0 +1,124 @@
+{
+  "info": {
+    "name": "Weather Pincode API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "First request - fetch and save",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pincode\": \"411014\",\n  \"for_date\": \"2020-10-15\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/weather",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "weather"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Second request - cache hit",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pincode\": \"411014\",\n  \"for_date\": \"2020-10-15\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/weather",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "weather"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Same pincode - different date",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pincode\": \"411014\",\n  \"for_date\": \"2020-10-16\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/weather",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "weather"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Invalid pincode",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"pincode\": \"123\",\n  \"for_date\": \"2020-10-15\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:8080/api/v1/weather",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "8080",
+          "path": [
+            "api",
+            "v1",
+            "weather"
+          ]
+        }
+      }
+    }
+  ]
+}
